@@ -1,25 +1,20 @@
 import { bundleRequire } from 'bundle-require';
 import path from 'upath';
 import fs from 'fs-extra';
-import { ROOT, VANTIFY_CONFIG_FILE } from './constants.js';
+import {
+  COMPILE_EXCLUDE_DIRS,
+  ROOT,
+  VANTIFY_CONFIG_FILE,
+} from './constants.js';
 import { ResolvedConfig, UserConfig } from './types.js';
 import { getComponentEntry } from './utils.js';
 
 function getComponents(srcDir: string): string[] {
-  // TEMP
-  const EXCLUDES = [
-    '.DS_Store',
-    'common',
-    'utils',
-    'styles',
-    'tests',
-    '__tests__',
-  ];
   const dirs = fs.readdirSync(srcDir);
   const components: string[] = [];
 
   for (const dir of dirs) {
-    if (EXCLUDES.includes(dir)) {
+    if (COMPILE_EXCLUDE_DIRS.includes(dir)) {
       continue;
     }
 

@@ -1,7 +1,7 @@
 import jest from 'jest';
 import { Config } from '@jest/types';
 import { setNodeEnv } from '../common/utils.js';
-import { ROOT } from '../common/constants.js';
+import { JEST_CONFIG_FILE, ROOT } from '../common/constants.js';
 import { logger } from '../common/logger.js';
 
 export async function test(options: Config.Argv) {
@@ -10,9 +10,10 @@ export async function test(options: Config.Argv) {
   try {
     const { results } = await jest.runCLI(
       {
+        rootDir: ROOT,
+        config: JEST_CONFIG_FILE,
         // make jest tests faster
         // see: https://ivantanev.com/make-jest-faster/
-        rootDir: ROOT,
         maxWorkers: options.watch ? '50%' : '25%',
         ...options,
       },

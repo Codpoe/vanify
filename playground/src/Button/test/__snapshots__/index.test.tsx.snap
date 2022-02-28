@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render and match snapshot 1`] = `
+<div>
+  <button
+    class="btn"
+  >
+    Hello Button
+    <span
+      class="tag"
+    >
+      Hello Tag
+    </span>
+  </button>
+</div>
+`;

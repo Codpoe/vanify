@@ -20,10 +20,20 @@ cli
     'Clears the configured Jest cache directory and then exits'
   )
   .option(
+    '-c, --config',
+    'The path to a jest config file specifying how to find and execute tests'
+  )
+  .option(
     '--coverage',
     'Indicates that test coverage information should be collected and reported in the output'
   )
   .option('--debug', 'Print debugging info about your jest config')
+  .option(
+    '-o, --onlyChanged',
+    'Attempts to identify which tests to run based on which files have changed in the current repository'
+  )
+  .option('-i, --runInBand', 'Run all tests serially in the current process')
+  .option('-u, --update-snapshot', 'Use this flag to re-record snapshots')
   .option(
     '--watch',
     'Watch files for changes and rerun tests related to changed files'

@@ -7,6 +7,7 @@ import { ResolvedConfig } from '../common/types.js';
 import { isScript, isStyle, setNodeEnv, startClock } from '../common/utils.js';
 import {
   CLI_VERSION,
+  COMPILE_EXCLUDE_DIRS,
   ES_DIR,
   LIB_DIR,
   TEMP_SRC_DIR,
@@ -52,9 +53,13 @@ async function compileDir(config: ResolvedConfig, dir: string) {
   await Promise.all(
     files.map(fileName => {
       const filePath = path.join(dir, fileName);
-      return fs.lstatSync(filePath).isDirectory()
-        ? compileDir(config, filePath)
-        : compileFile(config, filePath);
+      if (fs.lstatSync(filePath).isDirectory()) {
+        if (COMPILE_EXCLUDE_DIRS.includes(fileName)) {
+          return;
+        }
+        return compileDir(config, filePath);
+      }
+      return compileFile(config, filePath);
     })
   );
 }

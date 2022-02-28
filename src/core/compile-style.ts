@@ -64,8 +64,9 @@ export async function compileStyle(config: ResolvedConfig, filePath: string) {
   code = buffer.toString('utf-8');
 
   await Promise.all([
-    !isCss(filePath) && fs.copy(filePath, outputEsPath),
-    !isCss(filePath) && fs.copy(filePath, outputLibPath),
+    ...(isCss(filePath)
+      ? []
+      : [fs.copy(filePath, outputEsPath), fs.copy(filePath, outputLibPath)]),
     fs.outputFile(path.changeExt(outputEsPath, '.css'), code),
     fs.outputFile(path.changeExt(outputLibPath, '.css'), code),
   ]);

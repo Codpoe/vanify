@@ -37,6 +37,7 @@
   "dependencies": {
     "@parcel/css": "^1.4.0",
     "@swc/core": "^1.2.145",
+    "@swc/jest": "^0.2.20",
     "bundle-require": "^3.0.4",
     "cac": "^6.7.12",
     "consola": "^2.15.3",
