@@ -49,6 +49,11 @@ export const JEST_CONFIG_FILE = path.join(
   __dirname,
   '../../cjs/jest.config.cjs'
 );
+export const RELEASE_IT_PLUGIN_FILE = path.join(
+  __dirname,
+  '../../cjs/release-it-plugin.cjs'
+);
+export const CHANGELOG_FILE = path.join(ROOT, 'CHANGELOG.md');
 
 export const COMPONENT_ENTRY_EXTS = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 export const SCRIPT_EXTS = ['.js', '.ts', '.jsx', '.tsx'];

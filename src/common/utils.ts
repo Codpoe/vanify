@@ -115,3 +115,24 @@ export function getPkgJson(): Record<string, any> | undefined {
     return fs.readJsonSync(pkgJson, 'utf-8');
   }
 }
+
+export function kebabCase(str: string): string {
+  return str.replace(/[A-Z]/g, x => '-' + x.toLowerCase());
+}
+
+export function kebabCaseObject<T extends Record<string, any>>(
+  obj: T,
+  keys?: (keyof T)[]
+) {
+  return Object.keys(obj).reduce<Record<string, any>>((res, key) => {
+    if (!keys || keys.includes(key)) {
+      const newKey = kebabCase(key);
+      if (newKey) {
+        res[newKey] = obj[key];
+      }
+    } else {
+      res[key] = obj[key];
+    }
+    return res;
+  }, {});
+}

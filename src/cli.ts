@@ -1,7 +1,9 @@
 import { cac } from 'cac';
 import { build } from './commands/build.js';
+// import { changelog } from './commands/changelog.js';
 import { clean } from './commands/clean.js';
 import { lint } from './commands/lint.js';
+import { release } from './commands/release.js';
 import { test } from './commands/test.js';
 import { CLI_VERSION } from './common/constants.js';
 import { logger } from './common/logger.js';
@@ -44,6 +46,36 @@ cli
 cli.command('build', 'Build components in production mode').action(build);
 
 cli.command('lint', 'Run eslint').action(lint);
+
+// cli
+//   .command('changelog', 'Generate changelog')
+//   .option(
+//     '-o, --out-file <outFile>',
+//     'Specify a file to write the changelog to'
+//   )
+//   .action(changelog);
+
+cli
+  .command('release', 'Release it')
+  .option(
+    '-i, --increment <increment>',
+    'Increment "major", "minor", "patch", or "pre*" version; or specify version [default: "patch"]'
+  )
+  .option(
+    '--preid <preReleaseId>',
+    'The "prerelease identifier" to use as a prefix for the "prerelease" part of a semver. Like the "beta" in 1.2.0-beta.8'
+  )
+  .option('--no-changelog', 'Whether to generate changelog file')
+  .option(
+    '--ci',
+    'No prompts, no user interaction; activated automatically in CI environments'
+  )
+  .option(
+    '-d, --dry-run',
+    'Do not touch or write anything, but show the commands'
+  )
+  .allowUnknownOptions()
+  .action(release);
 
 try {
   cli.parse(process.argv, { run: false });
