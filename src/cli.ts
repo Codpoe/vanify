@@ -2,6 +2,7 @@ import { cac } from 'cac';
 import { build } from './commands/build.js';
 // import { changelog } from './commands/changelog.js';
 import { clean } from './commands/clean.js';
+import { commitLint } from './commands/commit-lint.js';
 import { lint } from './commands/lint.js';
 import { release } from './commands/release.js';
 import { test } from './commands/test.js';
@@ -46,6 +47,10 @@ cli
 cli.command('build', 'Build components in production mode').action(build);
 
 cli.command('lint', 'Run eslint').action(lint);
+
+cli
+  .command('commit-lint <gitParams>', 'Lint commit message')
+  .action(commitLint);
 
 // cli
 //   .command('changelog', 'Generate changelog')
