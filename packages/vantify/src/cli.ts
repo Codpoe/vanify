@@ -1,4 +1,5 @@
 import { cac } from 'cac';
+import colors from 'picocolors';
 import { build } from './commands/build.js';
 // import { changelog } from './commands/changelog.js';
 import { clean } from './commands/clean.js';
