@@ -14,18 +14,18 @@ function getStyleExt(component: string): string | undefined {
 }
 
 function getStyleContent(
-  type: 'index' | 'css',
+  type: 'index' | 'raw',
   deps: string[],
   originStyleExt?: string
 ): string {
   let code = deps
     .map(
-      dep => `import '../../${dep}/style${type === 'index' ? '' : '/css'}';\n`
+      dep => `import '../../${dep}/style${type === 'index' ? '' : '/raw'}';\n`
     )
     .join('');
 
   if (originStyleExt) {
-    code += `import '../index${type === 'index' ? originStyleExt : '.css'}';\n`;
+    code += `import '../index${type === 'index' ? '.css' : originStyleExt}';\n`;
   }
 
   return code;
@@ -40,15 +40,17 @@ export async function genComponentStyle(config: ResolvedConfig) {
       const styleDir = path.join(TEMP_SRC_DIR, component, 'style');
 
       // <component>/style/index.ts
+      // point to compiled css
       await fs.outputFile(
         path.join(styleDir, 'index.ts'),
         getStyleContent('index', deps, originStyleExt)
       );
 
-      // <component>/style/css.ts
+      // <component>/style/raw.ts
+      // point to less or scss
       await fs.outputFile(
-        path.join(styleDir, 'css.ts'),
-        getStyleContent('css', deps, originStyleExt)
+        path.join(styleDir, 'raw.ts'),
+        getStyleContent('raw', deps, originStyleExt)
       );
     })
   );
