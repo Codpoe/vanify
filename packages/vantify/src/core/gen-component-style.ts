@@ -1,57 +1,61 @@
 import path from 'upath';
 import fs from 'fs-extra';
-import { STYLE_EXTS, TEMP_SRC_DIR } from '../common/constants.js';
-import { ResolvedConfig } from '../common/types.js';
+import { TEMP_SRC_DIR } from '../common/constants.js';
+import { CSS_LANG, ResolvedConfig } from '../common/types.js';
 import { getDepsMap } from './gen-deps-map.js';
 
-function getStyleExt(component: string): string | undefined {
-  for (const ext of STYLE_EXTS) {
-    const filePath = path.join(TEMP_SRC_DIR, component, `index${ext}`);
-    if (fs.existsSync(filePath)) {
-      return ext;
-    }
-  }
-}
-
 function getStyleContent(
-  type: 'index' | 'raw',
+  cssLang: CSS_LANG,
   deps: string[],
-  originStyleExt?: string
+  hasOwnStyle: boolean
 ): string {
   let code = deps
     .map(
-      dep => `import '../../${dep}/style${type === 'index' ? '' : '/raw'}';\n`
+      dep =>
+        `import '../../${dep}/style${
+          cssLang === 'css' ? '' : `/${cssLang}`
+        }';\n`
     )
     .join('');
 
-  if (originStyleExt) {
-    code += `import '../index${type === 'index' ? '.css' : originStyleExt}';\n`;
+  if (hasOwnStyle) {
+    code += `import '../index.${cssLang}';\n`;
   }
 
   return code;
 }
 
+/**
+ * Generate component style files based on the dependencies between components
+ */
 export async function genComponentStyle(config: ResolvedConfig) {
+  const { lang: cssLang } = config.css;
+  const depsMap = await getDepsMap();
+
   await Promise.all(
     config.components.map(async component => {
-      const depsMap = await getDepsMap();
       const deps = depsMap[component];
-      const originStyleExt = getStyleExt(component);
       const styleDir = path.join(TEMP_SRC_DIR, component, 'style');
+
+      const hasOwnStyle = fs.existsSync(
+        path.join(TEMP_SRC_DIR, component, `index.${cssLang}`)
+      );
 
       // <component>/style/index.ts
       // point to compiled css
       await fs.outputFile(
         path.join(styleDir, 'index.ts'),
-        getStyleContent('index', deps, originStyleExt)
+        getStyleContent('css', deps, hasOwnStyle)
       );
 
-      // <component>/style/raw.ts
+      // <component>/style/<cssLang>.ts
       // point to less or scss
-      await fs.outputFile(
-        path.join(styleDir, 'raw.ts'),
-        getStyleContent('raw', deps, originStyleExt)
-      );
+      if (cssLang !== 'css') {
+        await fs.outputFile(
+          path.join(styleDir, `${cssLang}.ts`),
+          getStyleContent(cssLang, deps, hasOwnStyle)
+        );
+      }
     })
   );
 }

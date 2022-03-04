@@ -21,8 +21,9 @@ import {
 import { compileScript } from '../core/compile-script.js';
 import { compileStyle } from '../core/compile-style.js';
 import { compileBundle } from '../core/compile-bundle.js';
-import { genPackageEntry } from '../core/gen-package-entry.js';
 import { genComponentStyle } from '../core/gen-component-style.js';
+import { genPackageEntry } from '../core/gen-package-entry.js';
+import { genPackageStyle } from '../core/gen-package-style.js';
 import { clean } from './clean.js';
 
 async function compileFile(config: ResolvedConfig, filePath: string) {
@@ -69,18 +70,26 @@ const tasks = new Listr<{
 }>([
   {
     title: 'Prepare (generate package entry and style entry)',
-    task: async ctx => {
+    task: async ({ config }) => {
       // clean all dist files
       await clean();
-      await fs.copy(ctx.config.srcDir, TEMP_SRC_DIR);
-      await genDepsMap(ctx.config);
-      await genComponentStyle(ctx.config);
-      await genPackageEntry(ctx.config);
+      // copy src files to temp directory for generating some additional files
+      await fs.copy(config.srcDir, TEMP_SRC_DIR);
+
+      await genDepsMap(config);
+      await genComponentStyle(config);
+      await genPackageEntry(config, {
+        outputPath: path.join(TEMP_SRC_DIR, 'index.ts'),
+      });
+      await genPackageStyle(config, {
+        pathResolver: filePath => `./${path.relative(config.srcDir, filePath)}`,
+        outputPath: path.join(TEMP_SRC_DIR, `index.${config.css.lang}`),
+      });
     },
   },
   {
     title: 'Build type declarations',
-    task: async (ctx, task) => {
+    task: async (_ctx, task) => {
       const tsProject = getTsDeclarationProject();
       if (!tsProject) {
         return task.skip('`tsconfig.declaration.json is not found`');
@@ -115,10 +124,10 @@ const tasks = new Listr<{
 export async function build() {
   setNodeEnv('production');
 
-  logger.log(colors.cyan(`vantify v${CLI_VERSION}`) + ' start build\n');
+  logger.log(colors.cyan(`vantify v${CLI_VERSION}`) + ' start build...\n');
 
-  const duration = startClock();
   const config = await resolveConfig();
+  const duration = startClock();
 
   await tasks.run({ config });
   await fs.remove(TEMP_SRC_DIR);

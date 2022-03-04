@@ -1,25 +1,63 @@
 import path from 'upath';
 import fs from 'fs-extra';
-import { STYLE_EXTS } from '../common/constants.js';
 import { ResolvedConfig } from '../common/types.js';
+import { getDirStyleFile } from '../common/utils.js';
 import { getDepsMap } from './gen-deps-map.js';
 
-function getPackageStyleFile(srcDir: string): string | undefined {
-  for (const ext of STYLE_EXTS) {
-    const filePath = path.join(srcDir, `index${ext}`);
-    if (fs.existsSync(filePath)) {
-      return filePath;
-    }
-  }
+export interface GenPackageStyleOptions {
+  pathResolver?: (filePath: string) => string;
+  outputPath?: string;
 }
 
-export async function genPackageStyle(config: ResolvedConfig) {
-  const packageStyleFile = getPackageStyleFile(config.srcDir);
+/**
+ * Generate the entry style file for package
+ */
+export async function genPackageStyle(
+  config: ResolvedConfig,
+  options?: GenPackageStyleOptions
+) {
+  const packageStyleFile = getDirStyleFile(config.srcDir);
 
+  // package style exists (user custom package style)
   if (packageStyleFile) {
     return;
   }
 
   const depsMap = await getDepsMap();
-  // const code = depsMap.flattened.map(component =>)
+  const { lang: cssLang } = config.css;
+
+  let code = '';
+
+  let { base: cssBaseFile } = config.css;
+  if (cssBaseFile) {
+    cssBaseFile;
+
+    if (options?.pathResolver) {
+      cssBaseFile = options.pathResolver(cssBaseFile);
+    }
+
+    code += `@import '${cssBaseFile}';\n`;
+  }
+
+  code += depsMap.flattened
+    .map(component => {
+      let filePath = path.join(config.srcDir, component, `index.${cssLang}`);
+
+      if (!fs.existsSync(filePath)) {
+        return;
+      }
+
+      if (options?.pathResolver) {
+        filePath = options.pathResolver(filePath);
+      }
+
+      return `@import '${filePath}';\n`;
+    })
+    .filter((x): x is string => !!x)
+    .join('');
+
+  if (options?.outputPath) {
+    return fs.outputFile(options.outputPath, code);
+  }
+  return code;
 }

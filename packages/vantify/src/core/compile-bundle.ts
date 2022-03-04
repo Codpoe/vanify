@@ -1,7 +1,7 @@
 import { build, InlineConfig, LibraryFormats } from 'vite';
 import { DIST_DIR, TEMP_SRC_DIR } from '../common/constants.js';
 import { ResolvedConfig } from '../common/types.js';
-import { getPackageEntryFile, getPkgJson } from '../common/utils.js';
+import { getDirEntryFile, getPkgJson } from '../common/utils.js';
 
 interface GetViteConfigOptions {
   config: ResolvedConfig;
@@ -29,7 +29,7 @@ function getViteConfig({
     build: {
       lib: {
         name: config.name,
-        entry: getPackageEntryFile(TEMP_SRC_DIR)!,
+        entry: getDirEntryFile(TEMP_SRC_DIR)!,
         formats,
         fileName,
         ...config.vite?.build?.lib,

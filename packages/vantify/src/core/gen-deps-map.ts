@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'upath';
 import { ResolvedConfig } from '../common/types.js';
-import { DEPS_MAP_FILE, TEMP_SRC_DIR } from '../common/constants.js';
+import { DEPS_MAP_FILE } from '../common/constants.js';
 import {
   fillScriptExts,
   getComponentEntry,
@@ -24,17 +24,7 @@ function getImports(code: string): string[] {
     .map(x => x.split(/['"]/)[1]);
 }
 
-let depsCache: Record<string, string[]> = {};
-
-export function clearDepsCache() {
-  depsCache = {};
-}
-
-function analyzeDeps(filePath: string): string[] {
-  if (depsCache[filePath]) {
-    return depsCache[filePath];
-  }
-
+function analyzeDeps(srcDir: string, filePath: string): string[] {
   const deps = getImports(fs.readFileSync(filePath, 'utf-8'))
     .map(x => {
       // not relative dependency
@@ -44,7 +34,7 @@ function analyzeDeps(filePath: string): string[] {
 
       const importPath = path.join(filePath, '..', x);
       // not in temp src
-      if (!importPath.startsWith(TEMP_SRC_DIR)) {
+      if (!importPath.startsWith(srcDir)) {
         return;
       }
 
@@ -59,7 +49,7 @@ function extractComponentName(
   config: ResolvedConfig,
   dep: string
 ): string | undefined {
-  const maybeComponentName = path.relative(TEMP_SRC_DIR, dep).split('/')[0];
+  const maybeComponentName = path.relative(config.srcDir, dep).split('/')[0];
   return config.components.find(name => maybeComponentName === name);
 }
 
@@ -74,7 +64,7 @@ function collectDeps(config: ResolvedConfig, component: string): string[] {
 
     record.add(filePath);
 
-    analyzeDeps(filePath).forEach(dep => {
+    analyzeDeps(config.srcDir, filePath).forEach(dep => {
       // deep first
       analyze(dep);
 
@@ -86,7 +76,7 @@ function collectDeps(config: ResolvedConfig, component: string): string[] {
     });
   }
 
-  const componentEntry = getComponentEntry(TEMP_SRC_DIR, component);
+  const componentEntry = getComponentEntry(config.srcDir, component);
 
   if (componentEntry) {
     analyze(componentEntry);
@@ -120,6 +110,9 @@ export function getDepsMap(): Promise<DepsMap> {
   return fs.readJson(DEPS_MAP_FILE, 'utf-8');
 }
 
+/**
+ * Generate dependency mapping between components
+ */
 export async function genDepsMap(config: ResolvedConfig): Promise<DepsMap> {
   const depsMap = config.components.reduce<DepsMap>(
     (res, component) => {

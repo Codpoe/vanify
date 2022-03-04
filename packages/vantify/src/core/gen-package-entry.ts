@@ -1,12 +1,20 @@
-import path from 'upath';
 import fs from 'fs-extra';
 import { ResolvedConfig } from '../common/types.js';
-import { ROOT, TEMP_SRC_DIR } from '../common/constants.js';
-import { getPackageEntryFile } from '../common/utils.js';
+import { getDirEntryFile, getPkgJson, pascalCase } from '../common/utils.js';
 import { getDepsMap } from './gen-deps-map.js';
 
-export async function genPackageEntry(config: ResolvedConfig) {
-  const packageEntryFile = getPackageEntryFile(TEMP_SRC_DIR);
+export interface GenPackageEntryOptions {
+  outputPath?: string;
+}
+
+/**
+ * Generate the entry script file for package
+ */
+export async function genPackageEntry(
+  config: ResolvedConfig,
+  options?: GenPackageEntryOptions
+) {
+  const packageEntryFile = getDirEntryFile(config.srcDir);
 
   // package entry exists (user custom package entry)
   if (packageEntryFile) {
@@ -14,26 +22,23 @@ export async function genPackageEntry(config: ResolvedConfig) {
   }
 
   const depsMap = await getDepsMap();
-  const pkgJsonFile = path.join(ROOT, 'package.json');
+  const version: string | undefined = getPkgJson()?.version;
 
   let code = depsMap.flattened
     .map(
       component =>
         `export ${
-          config.namedExport ? '*' : '{ default }'
+          config.namedExport ? '*' : `{ default as ${pascalCase(component)} }`
         } from './${component}';\n`
     )
     .join('');
-
-  let version: string | undefined;
-
-  if (fs.existsSync(pkgJsonFile)) {
-    ({ version } = await fs.readJson(pkgJsonFile, 'utf-8'));
-  }
 
   if (version) {
     code += `\nexport const version = '${version}';\n`;
   }
 
-  await fs.outputFile(path.join(TEMP_SRC_DIR, 'index.ts'), code);
+  if (options?.outputPath) {
+    return fs.outputFile(options.outputPath, code);
+  }
+  return code;
 }

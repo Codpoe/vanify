@@ -1,6 +1,8 @@
 import { UserConfig as ViteUserConfig, HtmlTagDescriptor } from 'vite';
 import { Options as SwcOptions } from '@swc/core';
 
+export type CSS_LANG = 'css' | 'less' | 'scss';
+
 export interface SiteNavItem {
   link: string;
   text?: string;
@@ -28,7 +30,7 @@ export interface UserConfig {
   /**
    * Library name
    */
-  name: string;
+  name?: string;
   /**
    * Whether to export components through Named Export.
    *
@@ -49,6 +51,20 @@ export interface UserConfig {
    */
   docsDir?: string;
   /**
+   * CSS config
+   */
+  css?: {
+    /**
+     * CSS lang (css, less, scss)
+     * @default 'css'
+     */
+    lang?: CSS_LANG;
+    /**
+     * CSS base file, which can be used to introduce CSS base variables and styles.
+     */
+    base?: string;
+  };
+  /**
    * site config
    */
   site?: SiteConfig;
@@ -66,5 +82,9 @@ export interface ResolvedConfig extends UserConfig {
   namedExport: boolean;
   srcDir: string;
   docsDir: string;
+  css: {
+    lang: CSS_LANG;
+    base?: string;
+  };
   components: string[];
 }

@@ -2,7 +2,10 @@
   "name": "vantify",
   "version": "0.1.0",
   "description": "make vant great again",
-  "keywords": ["vant", "vant-cli"],
+  "keywords": [
+    "vant",
+    "vant-cli"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -31,7 +34,8 @@
     "@codpoe/eslint-config": "^0.1.0",
     "@jest/types": "^27.5.1",
     "@types/conventional-changelog": "^3.1.1",
-    "@types/fs-extra": "^9.0.13"
+    "@types/fs-extra": "^9.0.13",
+    "@types/lodash-es": "^4.17.6"
   },
   "dependencies": {
     "@commitlint/format": "^16.2.1",
@@ -50,6 +54,7 @@
     "fs-extra": "^10.0.0",
     "jest": "^27.5.1",
     "listr2": "^4.0.4",
+    "lodash-es": "^4.17.21",
     "picocolors": "^1.0.0",
     "release-it": "^14.12.5",
     "upath": "^2.0.1",
