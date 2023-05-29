@@ -10,7 +10,7 @@ const cliPkgPath = fileURLToPath(
 const cliPkgJson = fs.readJsonSync(cliPkgPath, 'utf-8');
 export const CLI_VERSION = cliPkgJson.version;
 
-const possibleConfigFileNames = ['.js', '.mjs', '.ts'].map(
+const possibleConfigFileNames = ['.js', '.mjs', '.cjs', '.ts'].map(
   ext => `vantify.config${ext}`
 );
 export const VANTIFY_CONFIG_FILE = (function findVantifyConfigFile(

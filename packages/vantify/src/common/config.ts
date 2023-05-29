@@ -1,11 +1,7 @@
-import { bundleRequire } from 'bundle-require';
 import path from 'upath';
 import fs from 'fs-extra';
-import {
-  COMPILE_EXCLUDE_DIRS,
-  ROOT,
-  VANTIFY_CONFIG_FILE,
-} from './constants.js';
+import { loadConfig } from 'c12';
+import { COMPONENT_EXCLUDE_DIRS, ROOT } from './constants.js';
 import { CSS_LANG, ResolvedConfig, UserConfig } from './types.js';
 import { getComponentEntry, getPkgJson } from './utils.js';
 
@@ -14,7 +10,11 @@ function getComponents(srcDir: string): string[] {
   const components: string[] = [];
 
   for (const dir of dirs) {
-    if (COMPILE_EXCLUDE_DIRS.includes(dir)) {
+    if (
+      dir.startsWith('_') ||
+      dir.startsWith('.') ||
+      COMPONENT_EXCLUDE_DIRS.includes(dir)
+    ) {
       continue;
     }
 
@@ -36,9 +36,23 @@ function getCssBaseFile(srcDir: string, cssLang: CSS_LANG, base?: string) {
 }
 
 export async function resolveConfig(): Promise<ResolvedConfig> {
-  const config: UserConfig = await (
-    await bundleRequire({ filepath: VANTIFY_CONFIG_FILE })
-  ).mod?.default;
+  const config = (
+    await loadConfig<UserConfig>({
+      cwd: ROOT,
+      name: 'vantify',
+      rcFile: false,
+      defaults: {
+        srcDir: 'src',
+        docsDir: 'docs',
+        css: { lang: 'css' },
+        namedExport: false,
+      },
+    })
+  ).config as ResolvedConfig | null;
+
+  if (!config) {
+    throw new Error('vantify config file is not found.');
+  }
 
   const pkgJson = getPkgJson();
   const name = config.name || pkgJson?.name;
@@ -47,19 +61,17 @@ export async function resolveConfig(): Promise<ResolvedConfig> {
     throw new Error('`name` is required in vantify config or package.json');
   }
 
-  const srcDir = path.resolve(ROOT, config.srcDir || 'src');
-  const docsDir = path.resolve(ROOT, config.docsDir || 'docs');
-  const cssLang = config.css?.lang || 'css';
-  const cssBaseFile = getCssBaseFile(srcDir, cssLang, config.css?.base);
+  const srcDir = path.resolve(ROOT, config.srcDir);
+  const docsDir = path.resolve(ROOT, config.docsDir);
+  const cssBaseFile = getCssBaseFile(srcDir, config.css.lang, config.css?.base);
 
   return {
-    namedExport: false,
     ...config,
     name,
     srcDir,
     docsDir,
     css: {
-      lang: cssLang,
+      ...config.css,
       base: cssBaseFile,
     },
     components: getComponents(srcDir),

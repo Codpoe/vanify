@@ -18,13 +18,13 @@
     "*.{js,jsx,ts,tsx}": "eslint --fix"
   },
   "devDependencies": {
-    "@codpoe/eslint-config": "^0.1.0",
+    "@codpoe/eslint-config": "^0.1.4",
     "@types/jest": "^27.4.1",
-    "@types/node": "^17.0.18",
-    "eslint": "^8.9.0",
-    "husky": "^7.0.4",
+    "@types/node": "^20.2.4",
+    "eslint": "^8.41.0",
+    "husky": "^8.0.3",
     "jest": "^27.5.1",
-    "lint-staged": "^12.3.4",
+    "lint-staged": "^13.2.2",
     "typescript": "^4.5.5"
   }
 }
