@@ -1,5 +1,6 @@
 import { UserConfig as ViteUserConfig, HtmlTagDescriptor } from 'vite';
 import { Options as SwcOptions } from '@swc/core';
+import { BundleAsyncOptions } from 'lightningcss';
 
 export type CSS_LANG = 'css' | 'less' | 'scss';
 
@@ -34,10 +35,11 @@ export interface UserConfig {
   /**
    * Whether to export components through Named Export.
    *
+   * When `true`, all module and type definitions within the component are exported through `export * from 'xxx'`.
+   *
    * When `false`, the component is exported through `export default from 'xxx'`.
    *
-   * When `true`, all module and type definitions within the component are exported through `export * from 'xxx'`.
-   * @default false
+   * @default true
    */
   namedExport?: boolean;
   /**
@@ -76,6 +78,10 @@ export interface UserConfig {
    * swc options
    */
   swc?: SwcOptions;
+  /**
+   * lightningcss bundle options
+   */
+  lightningcss?: BundleAsyncOptions<any>;
 }
 
 export interface ResolvedConfig extends UserConfig {

@@ -45,7 +45,7 @@ export async function resolveConfig(): Promise<ResolvedConfig> {
         srcDir: 'src',
         docsDir: 'docs',
         css: { lang: 'css' },
-        namedExport: false,
+        namedExport: true,
       },
     })
   ).config as ResolvedConfig | null;

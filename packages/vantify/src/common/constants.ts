@@ -55,7 +55,7 @@ export const RELEASE_IT_PLUGIN_FILE = path.join(
 );
 export const CHANGELOG_FILE = path.join(ROOT, 'CHANGELOG.md');
 
-export const COMPONENT_ENTRY_EXTS = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
+export const COMPONENT_ENTRY_EXTS = ['.ts', '.tsx', '.js', '.jsx', '.vue'];
 export const SCRIPT_EXTS = ['.js', '.ts', '.jsx', '.tsx'];
 export const STYLE_EXTS = ['.css', '.less', '.scss'];
 export const SCRIPT_REGEXP = /\.(j|t)sx?$/;

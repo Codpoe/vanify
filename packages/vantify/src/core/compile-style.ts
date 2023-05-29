@@ -1,7 +1,7 @@
 import { createRequire } from 'module';
 import path from 'upath';
 import fs from 'fs-extra';
-import css from '@parcel/css';
+import { bundleAsync } from 'lightningcss';
 import { ResolvedConfig } from '../common/types.js';
 import { isCss, isLess, isScss } from '../common/utils.js';
 import { ES_DIR, LIB_DIR, ROOT, TEMP_SRC_DIR } from '../common/constants.js';
@@ -55,11 +55,12 @@ export async function compileStyle(config: ResolvedConfig, filePath: string) {
     code = compileSass(code, filePath);
   }
 
-  const { code: buffer } = await css.bundle({
-    filename: filePath,
+  const { code: buffer } = await bundleAsync({
+    targets: { chrome: 61, edge: 16, firefox: 60, safari: 11, ios_saf: 11 },
     drafts: { nesting: true, customMedia: true },
-    targets: { chrome: 53, safari: 10 },
     minify: true,
+    ...config.lightningcss,
+    filename: filePath,
   });
   code = buffer.toString('utf-8');
 

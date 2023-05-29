@@ -33,7 +33,7 @@ function analyzeDeps(srcDir: string, filePath: string): string[] {
       }
 
       const importPath = path.join(filePath, '..', x);
-      // not in temp src
+      // not in src dir
       if (!importPath.startsWith(srcDir)) {
         return;
       }

@@ -30,8 +30,6 @@ export async function genPackageStyle(
 
   let { base: cssBaseFile } = config.css;
   if (cssBaseFile) {
-    cssBaseFile;
-
     if (options?.pathResolver) {
       cssBaseFile = options.pathResolver(cssBaseFile);
     }

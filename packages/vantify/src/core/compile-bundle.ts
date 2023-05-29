@@ -36,7 +36,7 @@ function getViteConfig({
       },
       outDir: DIST_DIR,
       emptyOutDir: false,
-      minify: minify ? 'terser' : false,
+      minify,
       rollupOptions: {
         external,
         output: {
