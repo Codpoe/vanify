@@ -1,12 +1,17 @@
 import releaseIt, { ReleaseItOptions } from 'release-it';
-import { CHANGELOG_FILE, RELEASE_IT_PLUGIN_FILE } from '../common/constants.js';
+import {
+  CHANGELOG_FILE,
+  RELEASE_IT_PLUGIN_FILE,
+  ROOT,
+} from '../common/constants.js';
 import { getPkgJson, kebabCaseObject } from '../common/utils.js';
 
 export interface ReleaseOptions {
   [key: string]: any;
   increment?: string;
+  preRelease?: boolean | string;
   preReleaseId?: string;
-  changelog: boolean;
+  changelog?: boolean;
   ci?: boolean;
   dryRun?: boolean;
   onlyVersion?: boolean;
@@ -31,7 +36,7 @@ function parseOptions(options: ReleaseOptions): ParsedOptions {
   // use 'beta' by default.
   if (
     !parsed.preReleaseId &&
-    !parsed.increment?.includes('-') &&
+    typeof parsed.preRelease !== 'string' &&
     !pkgJson?.version.includes('-')
   ) {
     parsed.preReleaseId = 'beta';
@@ -40,11 +45,16 @@ function parseOptions(options: ReleaseOptions): ParsedOptions {
   return parsed;
 }
 
-export async function release(options: ReleaseOptions) {
+export async function release(
+  increment?: string,
+  options: ReleaseOptions = {}
+) {
   const parsed = parseOptions(options);
 
   await releaseIt({
     ...parsed,
+    increment,
+    configDir: ROOT,
     plugins: {
       [RELEASE_IT_PLUGIN_FILE]: {},
       ...(parsed.changelog && {

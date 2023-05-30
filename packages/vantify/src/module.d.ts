@@ -12,12 +12,12 @@ declare module 'release-it' {
     github?: any;
     gitlab?: any;
     ci?: boolean;
-    'disable-metrics'?: boolean;
     'dry-run'?: boolean;
     increment?: string;
     'only-version'?: boolean;
     'release-version'?: boolean;
     preReleaseId?: string;
+    configDir?: string;
   }
 
   interface ReleaseIt {

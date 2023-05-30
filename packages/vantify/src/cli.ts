@@ -62,13 +62,12 @@ cli
 //   .action(changelog);
 
 cli
-  .command('release', 'Release it')
-  .option(
-    '-i, --increment <increment>',
-    'Increment "major", "minor", "patch", or "pre*" version; or specify version [default: "patch"]'
+  .command(
+    'release [increment]',
+    `Release "major", "minor", "patch", or "pre*" version; or specify version [default: "patch"]`
   )
   .option(
-    '--preid <preReleaseId>',
+    '--preRelease [preReleaseId]',
     'The "prerelease identifier" to use as a prefix for the "prerelease" part of a semver. Like the "beta" in 1.2.0-beta.8'
   )
   .option('--no-changelog', 'Whether to generate changelog file')

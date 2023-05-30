@@ -51,7 +51,7 @@ export const JEST_CONFIG_FILE = path.join(
 );
 export const RELEASE_IT_PLUGIN_FILE = path.join(
   __dirname,
-  '../../cjs/release-it-plugin.cjs'
+  '../../config/release-it-plugin.js'
 );
 export const CHANGELOG_FILE = path.join(ROOT, 'CHANGELOG.md');
 
