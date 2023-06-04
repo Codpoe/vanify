@@ -11,9 +11,9 @@ const cliPkgJson = fs.readJsonSync(cliPkgPath, 'utf-8');
 export const CLI_VERSION = cliPkgJson.version;
 
 const possibleConfigFileNames = ['.js', '.mjs', '.cjs', '.ts'].map(
-  ext => `vantify.config${ext}`
+  ext => `vanify.config${ext}`
 );
-export const VANTIFY_CONFIG_FILE = (function findVantifyConfigFile(
+export const VANIFY_CONFIG_FILE = (function findVanifyConfigFile(
   dir: string
 ): string {
   for (const name of possibleConfigFileNames) {
@@ -25,13 +25,13 @@ export const VANTIFY_CONFIG_FILE = (function findVantifyConfigFile(
 
   const parentDir = path.dirname(dir);
   if (dir === parentDir) {
-    throw new Error('vantify config file is not found.');
+    throw new Error('vanify config file is not found.');
   }
 
-  return findVantifyConfigFile(parentDir);
+  return findVanifyConfigFile(parentDir);
 })(process.cwd());
 
-export const ROOT = path.dirname(VANTIFY_CONFIG_FILE);
+export const ROOT = path.dirname(VANIFY_CONFIG_FILE);
 export const ES_DIR = path.join(ROOT, 'es');
 export const LIB_DIR = path.join(ROOT, 'lib');
 export const DIST_DIR = path.join(ROOT, 'dist');

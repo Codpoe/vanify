@@ -1,7 +1,7 @@
-// import { defineConfig } from 'vantify';
+// import { defineConfig } from 'vanify';
 
 export default {
-  name: 'vantify-playground',
+  name: 'vanify-playground',
   css: {
     lang: 'less',
   },

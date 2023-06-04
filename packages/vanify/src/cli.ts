@@ -1,16 +1,16 @@
 import { cac } from 'cac';
-import colors from 'picocolors';
+// import colors from 'picocolors';
 import { build } from './commands/build.js';
 // import { changelog } from './commands/changelog.js';
 import { clean } from './commands/clean.js';
-import { commitLint } from './commands/commit-lint.js';
-import { lint } from './commands/lint.js';
+// import { commitLint } from './commands/commit-lint.js';
+// import { lint } from './commands/lint.js';
 import { release } from './commands/release.js';
 import { test } from './commands/test.js';
 import { CLI_VERSION } from './common/constants.js';
 import { logger } from './common/logger.js';
 
-const cli = cac('vantify');
+const cli = cac('vanify');
 
 cli.version(CLI_VERSION);
 cli.help();
@@ -47,11 +47,11 @@ cli
 
 cli.command('build', 'Build components in production mode').action(build);
 
-cli.command('lint', 'Run eslint').action(lint);
+// cli.command('lint', 'Run eslint').action(lint);
 
-cli
-  .command('commit-lint <gitParams>', 'Lint commit message')
-  .action(commitLint);
+// cli
+//   .command('commit-lint <gitParams>', 'Lint commit message')
+//   .action(commitLint);
 
 // cli
 //   .command('changelog', 'Generate changelog')

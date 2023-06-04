@@ -39,7 +39,7 @@ export async function resolveConfig(): Promise<ResolvedConfig> {
   const config = (
     await loadConfig<UserConfig>({
       cwd: ROOT,
-      name: 'vantify',
+      name: 'vanify',
       rcFile: false,
       defaults: {
         srcDir: 'src',
@@ -51,14 +51,14 @@ export async function resolveConfig(): Promise<ResolvedConfig> {
   ).config as ResolvedConfig | null;
 
   if (!config) {
-    throw new Error('vantify config file is not found.');
+    throw new Error('vanify config file is not found.');
   }
 
   const pkgJson = getPkgJson();
   const name = config.name || pkgJson?.name;
 
   if (!name) {
-    throw new Error('`name` is required in vantify config or package.json');
+    throw new Error('`name` is required in vanify config or package.json');
   }
 
   const srcDir = path.resolve(ROOT, config.srcDir);

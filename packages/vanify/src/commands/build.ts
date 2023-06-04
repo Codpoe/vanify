@@ -124,7 +124,7 @@ const tasks = new Listr<{
 export async function build() {
   setNodeEnv('production');
 
-  logger.log(colors.cyan(`vantify v${CLI_VERSION}`) + ' start build...\n');
+  logger.log(colors.cyan(`vanify v${CLI_VERSION}`) + ' start build...\n');
 
   const config = await resolveConfig();
   const duration = startClock();

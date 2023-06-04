@@ -1,10 +1,18 @@
 import React from 'react';
 import { Tag } from '../Tag';
 
-export const Button: React.FC = () => {
+export interface ButtonProps {
+  /**
+   * Button type
+   * @default 'primary'
+   */
+  type?: 'primary' | 'secondary';
+}
+
+export const Button: React.FC<ButtonProps> = ({ type = 'primary' }) => {
   return (
     <button className="btn">
-      Hello Button
+      Hello Button {type}
       <Tag />
     </button>
   );

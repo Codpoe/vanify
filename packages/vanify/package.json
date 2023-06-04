@@ -1,5 +1,5 @@
 {
-  "name": "vantify",
+  "name": "vanify",
   "version": "0.1.0",
   "description": "make vant great again",
   "keywords": [
@@ -9,12 +9,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Codpoe/vantify.git"
+    "url": "git+https://github.com/Codpoe/vanify.git"
   },
   "bugs": {
-    "url": "https://github.com/Codpoe/vantify/issues"
+    "url": "https://github.com/Codpoe/vanify/issues"
   },
-  "homepage": "https://github.com/Codpoe/vantify#readme",
+  "homepage": "https://github.com/Codpoe/vanify#readme",
   "author": "Codpoe <codpoe.me@gmail.com> (https://github.com/codpoe)",
   "type": "module",
   "files": [
@@ -25,7 +25,7 @@
   ],
   "main": "dist/index.js",
   "bin": {
-    "vantify": "bin/vantify.js"
+    "vanify": "bin/vanify.js"
   },
   "scripts": {
     "dev": "tsc -w",
