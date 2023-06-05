@@ -2,8 +2,18 @@ import path from 'upath';
 import fs from 'fs-extra';
 import swc, { ParserConfig } from '@swc/core';
 import { ResolvedConfig } from '../common/types.js';
-import { isDeclaration, isJS, isJSX } from '../common/utils.js';
-import { ES_DIR, LIB_DIR, TEMP_SRC_DIR } from '../common/constants.js';
+import {
+  isComponentEntry,
+  isDeclaration,
+  isJS,
+  isJSX,
+} from '../common/utils.js';
+import {
+  ES_DIR,
+  LIB_DIR,
+  STYLE_IMPORT_REGEXP,
+  TEMP_SRC_DIR,
+} from '../common/constants.js';
 
 export async function compileScript(
   config: ResolvedConfig,
@@ -20,6 +30,12 @@ export async function compileScript(
     return;
   }
 
+  let code = await fs.readFile(filePath, 'utf-8');
+
+  if (isComponentEntry(config, filePath)) {
+    code = code.replace(STYLE_IMPORT_REGEXP, '');
+  }
+
   const parserConfig: ParserConfig = isJS(filePath)
     ? {
         syntax: 'ecmascript',
@@ -30,7 +46,7 @@ export async function compileScript(
         tsx: isJSX(filePath),
       };
 
-  const { code } = await swc.transformFile(filePath, {
+  ({ code } = await swc.transform(code, {
     ...config.swc,
     filename: filePath,
     jsc: {
@@ -41,7 +57,7 @@ export async function compileScript(
     module: {
       type: moduleType,
     },
-  });
+  }));
 
   outputPath = path.changeExt(outputPath, '.js');
   await fs.outputFile(outputPath, code);

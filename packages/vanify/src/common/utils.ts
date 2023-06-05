@@ -9,7 +9,9 @@ import {
   SCRIPT_REGEXP,
   STYLE_EXTS,
   STYLE_REGEXP,
+  TEMP_SRC_DIR,
 } from './constants.js';
+import { ResolvedConfig } from './types.js';
 
 export type NodeEnv = 'production' | 'development' | 'test';
 
@@ -163,6 +165,15 @@ export function getComponentEntry(srcDir: string, component: string) {
       return filePath;
     }
   }
+}
+
+/**
+ * Determine if the path is a component entry
+ */
+export function isComponentEntry(config: ResolvedConfig, filePath: string) {
+  return config.components.some(x =>
+    filePath.startsWith(path.join(TEMP_SRC_DIR, x, 'index.'))
+  );
 }
 
 /**

@@ -61,9 +61,13 @@ export const STYLE_EXTS = ['.css', '.less', '.scss'];
 export const SCRIPT_REGEXP = /\.(j|t)sx?$/;
 export const JSX_REGEXP = /\.(j|t)sx$/;
 export const STYLE_REGEXP = /\.(css|less|scss)$/;
+export const STYLE_IMPORT_REGEXP = new RegExp(
+  `import\\s+('|")\\.\\/index(${STYLE_EXTS.join('|')})\\1;?`
+);
 
 export const COMPILE_EXCLUDE_DIRS = [
   '.DS_Store',
+  'stories',
   'demos',
   'demo',
   'tests',
