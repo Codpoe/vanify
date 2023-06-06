@@ -20,7 +20,8 @@
   "files": [
     "bin",
     "dist",
-    "cjs"
+    "cjs",
+    "config"
   ],
   "main": "dist/index.js",
   "bin": {
