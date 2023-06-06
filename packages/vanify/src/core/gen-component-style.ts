@@ -6,10 +6,13 @@ import { getDepsMap } from './gen-deps-map.js';
 
 function getStyleContent(
   cssLang: CSS_LANG,
+  baseImport: string,
   deps: string[],
   hasOwnStyle: boolean
 ): string {
-  let code = deps
+  let code = baseImport ? `import '../../${baseImport}';\n` : '';
+
+  code += deps
     .map(
       dep =>
         `import '../../${dep}/style${
@@ -29,8 +32,19 @@ function getStyleContent(
  * Generate component style files based on the dependencies between components
  */
 export async function genComponentStyle(config: ResolvedConfig) {
-  const { lang: cssLang } = config.css;
+  const { lang: cssLang, base: cssBaseFile } = config.css;
   const depsMap = await getDepsMap();
+  let baseImport = '';
+  let compiledBaseImport = '';
+
+  if (cssBaseFile) {
+    const relativeCssBaseFile = path.relative(config.srcDir, cssBaseFile);
+    baseImport = path.relative(config.srcDir, cssBaseFile);
+    compiledBaseImport =
+      cssLang !== 'css'
+        ? path.changeExt(relativeCssBaseFile, '.css')
+        : baseImport;
+  }
 
   await Promise.all(
     config.components.map(async component => {
@@ -45,7 +59,7 @@ export async function genComponentStyle(config: ResolvedConfig) {
       // point to compiled css
       await fs.outputFile(
         path.join(styleDir, 'index.ts'),
-        getStyleContent('css', deps, hasOwnStyle)
+        getStyleContent('css', compiledBaseImport, deps, hasOwnStyle)
       );
 
       // <component>/style/<cssLang>.ts
@@ -53,7 +67,7 @@ export async function genComponentStyle(config: ResolvedConfig) {
       if (cssLang !== 'css') {
         await fs.outputFile(
           path.join(styleDir, `${cssLang}.ts`),
-          getStyleContent(cssLang, deps, hasOwnStyle)
+          getStyleContent(cssLang, baseImport, deps, hasOwnStyle)
         );
       }
     })
