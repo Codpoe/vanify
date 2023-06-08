@@ -5,15 +5,18 @@ import { COMPONENT_EXCLUDE_DIRS, ROOT } from './constants.js';
 import { CSS_LANG, ResolvedConfig, UserConfig } from './types.js';
 import { getComponentEntry, getPkgJson } from './utils.js';
 
-function getComponents(srcDir: string): string[] {
+function getComponents(config: UserConfig, srcDir: string): string[] {
   const dirs = fs.readdirSync(srcDir);
   const components: string[] = [];
+  const componentExcludeDirs = COMPONENT_EXCLUDE_DIRS.concat(
+    config.componentExcludeDir || []
+  );
 
   for (const dir of dirs) {
     if (
       dir.startsWith('_') ||
       dir.startsWith('.') ||
-      COMPONENT_EXCLUDE_DIRS.includes(dir)
+      componentExcludeDirs.includes(dir)
     ) {
       continue;
     }
@@ -74,7 +77,7 @@ export async function resolveConfig(): Promise<ResolvedConfig> {
       ...config.css,
       base: cssBaseFile,
     },
-    components: getComponents(srcDir),
+    components: getComponents(config, srcDir),
   };
 }
 

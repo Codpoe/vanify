@@ -80,4 +80,5 @@ export const COMPONENT_EXCLUDE_DIRS = COMPILE_EXCLUDE_DIRS.concat([
   'utils',
   'styles',
   'assets',
+  'hooks',
 ]);
