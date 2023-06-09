@@ -52,7 +52,7 @@ export interface UserConfig {
    * @default 'docs'
    */
   docsDir?: string;
-  componentExcludeDir?: string[];
+  componentExcludeDirs?: string[];
   /**
    * CSS config
    */

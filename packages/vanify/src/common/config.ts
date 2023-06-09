@@ -9,7 +9,7 @@ function getComponents(config: UserConfig, srcDir: string): string[] {
   const dirs = fs.readdirSync(srcDir);
   const components: string[] = [];
   const componentExcludeDirs = COMPONENT_EXCLUDE_DIRS.concat(
-    config.componentExcludeDir || []
+    config.componentExcludeDirs || []
   );
 
   for (const dir of dirs) {
